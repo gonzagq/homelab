@@ -1,0 +1,14 @@
+# Servidor multimedia para las teles de la casa (accesible por LAN y Tailscale).
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    user: 1000:1000
+    ports:
+      - "0.0.0.0:8096:8096"
+    volumes:
+      - /mnt/appdata/docker-config/jellyfin:/config
+      - /mnt/storage/data/media:/media:ro
+    environment:
+      - TZ=America/Argentina/Buenos_Aires

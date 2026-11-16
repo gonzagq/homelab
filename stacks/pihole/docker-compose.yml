@@ -1,0 +1,19 @@
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: pihole
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:53:53/tcp"
+      - "0.0.0.0:53:53/udp"
+      - "0.0.0.0:8053:80/tcp"
+    environment:
+      TZ: America/Argentina/Mendoza
+      FTLCONF_webserver_api_password: ${PIHOLE_PASS}
+      FTLCONF_dns_listeningMode: all
+      FTLCONF_dns_upstreams: "1.1.1.1;9.9.9.9"
+    volumes:
+      - ./etc-pihole:/etc/pihole
+    cap_add:
+      - SYS_NICE

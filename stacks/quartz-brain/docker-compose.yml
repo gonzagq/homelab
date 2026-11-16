@@ -1,0 +1,26 @@
+# Sitio estático (notas en Quartz) servido por Caddy con hardening completo.
+# Publicado SOLO en 127.0.0.1; afuera se ve con `tailscale serve` (solo tailnet).
+services:
+  quartz-brain:
+    image: caddy:2-alpine
+    container_name: quartz-brain
+    restart: unless-stopped
+    read_only: true
+    user: "1000:1000"
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    tmpfs:
+      - /data:uid=1000,gid=1000,mode=0700
+      - /config:uid=1000,gid=1000,mode=0700
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sitio:/srv:ro
+    ports:
+      - "127.0.0.1:8097:8097"
+    networks:
+      - monitoring   # Uptime Kuma lo chequea como http://quartz-brain:8097
+
+networks:
+  monitoring:
+    name: monitoring_default
+    external: true

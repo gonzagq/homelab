@@ -1,0 +1,14 @@
+# Multitool de red propio (ping, traceroute, DNS, port scan, LAN scan, TLS check, iperf3...).
+services:
+  network-toolkit:
+    build: .
+    container_name: network-toolkit
+    restart: unless-stopped
+    # host networking: necesario para que LAN Scan vea la red real
+    # en vez de la red interna del bridge de Docker.
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - PORT=8420

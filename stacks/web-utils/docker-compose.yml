@@ -1,0 +1,21 @@
+services:
+  stirling-pdf:
+    image: stirlingtools/stirling-pdf:latest
+    container_name: stirling-pdf
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8090:8080"
+    volumes:
+      - /mnt/appdata/docker-config/stirling-pdf/data:/usr/share/tessdata
+      - /mnt/appdata/docker-config/stirling-pdf/config:/configs
+      - /mnt/appdata/docker-config/stirling-pdf/logs:/logs
+    environment:
+      - DOCKER_ENABLE_SECURITY=false   # solo accesible por la tailnet
+      - LANGS=en_US
+
+  it-tools:
+    image: corentinth/it-tools:latest
+    container_name: it-tools
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8091:80"

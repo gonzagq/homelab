@@ -1,0 +1,30 @@
+services:
+  n8n:
+    image: n8nio/n8n:2.28.6
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:5678:5678"
+    environment:
+      - N8N_HOST=${SERVER_TAILSCALE_IP}
+      - N8N_PROTOCOL=http
+      - N8N_PORT=5678
+      - WEBHOOK_URL=http://${SERVER_TAILSCALE_IP}:5678/
+      - N8N_EDITOR_BASE_URL=http://${SERVER_TAILSCALE_IP}:5678/
+      - GENERIC_TIMEZONE=America/Argentina/Mendoza
+      - TZ=America/Argentina/Mendoza
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_SECURE_COOKIE=false   # solo se accede por la tailnet (sin HTTPS público)
+    volumes:
+      - /mnt/appdata/docker-config/n8n:/home/node/.n8n
+    networks:
+      - default
+      - docker-proxy      # API de Docker solo lectura (stacks/docker-proxy)
+      - prometheus        # métricas del host para alertas y reporte diario
+
+networks:
+  docker-proxy:
+    external: true
+  prometheus:
+    name: prometheus_default
+    external: true

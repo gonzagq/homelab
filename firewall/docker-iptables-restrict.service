@@ -1,0 +1,12 @@
+[Unit]
+Description=Restrict Docker published ports to LAN via DOCKER-USER chain
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/docker-iptables-restrict.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+# Bot de Discord → webhook interno de n8n. Sin puertos publicados.
+services:
+  discord-bot:
+    build:
+      context: ./bot
+      network: host   # el daemon corre con bridge=none (ver README)
+    image: discord-bot:local
+    container_name: discord-bot
+    restart: unless-stopped
+    env_file: .env
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 128m
+    networks:
+      - n8n   # llega a http://n8n:5678
+
+networks:
+  n8n:
+    name: n8n_default
+    external: true

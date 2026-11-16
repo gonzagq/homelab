@@ -1,0 +1,25 @@
+# Proxy de solo lectura a la API de Docker para n8n y Homepage.
+# Sin puertos publicados: solo accesible desde la red interna docker-proxy.
+services:
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy:v0.4.1
+    container_name: docker-proxy
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /run
+      - /tmp
+    mem_limit: 64m
+    environment:
+      - CONTAINERS=1
+      - INFO=1
+      - POST=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - docker-proxy
+
+networks:
+  docker-proxy:
+    name: docker-proxy
+    internal: true

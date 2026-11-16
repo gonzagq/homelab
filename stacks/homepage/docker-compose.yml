@@ -1,0 +1,22 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    env_file: .env   # HOMEPAGE_VAR_* con las API keys de los widgets (no versionado)
+    environment:
+      - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS}
+    ports:
+      - "0.0.0.0:8083:3000"
+    volumes:
+      - /mnt/appdata/docker-config/homepage/config:/app/config
+      - /mnt/storage:/mnt/storage:ro
+      - /sys:/sys:ro
+    networks:
+      - default
+      - docker-proxy   # socket proxy de solo lectura (docker.yaml -> docker-proxy:2375)
+
+networks:
+  default: {}
+  docker-proxy:
+    external: true

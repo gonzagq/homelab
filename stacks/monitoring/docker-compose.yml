@@ -1,0 +1,10 @@
+# Uptime Kuma: chequeos de cada servicio con alertas a Discord.
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:3002:3001"
+    volumes:
+      - /mnt/appdata/docker-config/uptime-kuma:/app/data

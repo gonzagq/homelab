@@ -1,0 +1,25 @@
+# Backups cifrados: copia diaria a otro disco físico (NVMe) + copia offsite en la nube.
+services:
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    container_name: duplicati
+    restart: unless-stopped
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Argentina/Buenos_Aires
+      - SETTINGS_ENCRYPTION_KEY=${DUPLICATI_SETTINGS_KEY}
+      - DUPLICATI__WEBSERVICE_PASSWORD=${DUPLICATI_WEB_PASSWORD}
+    ports:
+      - "0.0.0.0:8200:8200"
+    volumes:
+      - /mnt/appdata/docker-config/duplicati:/config
+      # fuentes (solo lectura)
+      - /mnt/appdata/docker-config:/source/docker-config:ro
+      - /home/admin/stacks:/source/stacks:ro
+      - /mnt/storage/nextcloud-data:/source/nextcloud-data:ro
+      - /home/admin/scripts:/source/scripts:ro
+      - /home/admin/setup:/source/setup:ro
+      # destinos
+      - /mnt/storage/backups:/backups
+      - /srv/backups:/backups-nvme   # otro disco físico que /mnt/storage
